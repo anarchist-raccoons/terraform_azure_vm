@@ -1,0 +1,31 @@
+# AZURE Required
+subscription_id=""
+# client_id="xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+# client_secret="xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+tenant_id=""
+developer_access = ["",""]
+user_access = ["",""] # use 0.0.0.0/0 for public
+
+public_key="" # paste the contents of your public key
+
+# A Record
+zone_resource_group=""
+zone_name=""
+
+# labels
+owner="" # email address
+name="" 
+
+# AZURE Optional (defaults in place)
+resource_group_name=""
+# location=""
+# account_tier=""
+# vm_size="" # see https://docs.microsoft.com/en-us/azure/virtual-machines/linux/sizes-general
+
+# ALL Optional (defaults in place)
+# namespace-org="" # default is dev
+# environment="" # uat or prod; dev is default
+# org=""
+# service=""
+# product=""
+# team=""  

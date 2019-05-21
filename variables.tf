@@ -32,51 +32,34 @@ variable "account_tier" {
 }
 # az vm list-skus --output table | grep uksouth
 variable "vm_size" {
-  description = "VM Size, see https://docs.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-manage-vm"
-  default = "Standard_F2s_v2"
+  description = "VM Size, see https://docs.microsoft.com/en-us/azure/virtual-machines/linux/sizes-general"
+  default = "Standard_B1s"
 }
 
-variable "owner" { 
-  description = "Email address of the instance owner."
-  default = "" 
+variable "vm_image" {
+  description = "Image, see https://azuremarketplace.microsoft.com/en-us/marketplace/apps/RogueWave.CentOS76?tab=Overview"
+  type = "map"
+  default = {
+      publisher = "OpenLogic"
+      offer = "CentOS"
+      sku = "7.6"
+      version = "latest"
+    }
 }
 
-variable "name" {
-  description = "Short name for use across all AWS resouves."
-  default = "terraform"
-}
-
-variable "environment" { 
-  description = "Valid values are 'dev', 'uat', 'prod'."
-  default = "dev"
-}
-
-variable "namespace-org" {
-  description = "Use true to include namesapce in the label (namespace-stage/environment-name)."
-  default = true
-}
-
-variable "org" {
-  description = "Organisation name."
-  default = "leaf"
-}
-
-variable "service" {
-  description = "Service name. Optional."
-  default = ""
-}
-
-variable "product" {
-  description = "Produt name. Optional."
-  default = ""
-}
-
-variable "team" {
-  description = "Team name."
-  default = "research-technologies"
-}
 variable "developer_access" {
   description = "List of CIDR blocks for full (developer) access. Supply in terraform.tvars"
   type = "list"
   default = []
+}
+
+variable "user_access" {
+  description = "List of CIDR blocks for user access (port 80). Supply in terraform.tvars"
+  type = "list"
+  default = []
+}
+
+variable "server_user" {
+  description= "User for the server, normally azureuser"
+  default = "azureuser"
 }

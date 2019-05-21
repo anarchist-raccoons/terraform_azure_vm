@@ -1,5 +1,4 @@
 # https://docs.microsoft.com/en-us/azure/virtual-machines/linux/terraform-create-complete-vm
-
 # For consistent naming https://registry.terraform.io/modules/devops-workflow/label/local
 
 provider "azurerm" { 
@@ -54,13 +53,13 @@ resource "azurerm_public_ip" "publicip" {
   name = "${module.labels.id}-publicip"
   location = "${var.location}"
   resource_group_name = "${azurerm_resource_group.default.name}"
-  allocation_method = "Dynamic"
+  allocation_method = "Static"
 
   tags = "${module.labels.tags}"
 }
 
 resource "azurerm_network_security_group" "developer" {
-    name = "${module.labels.id}-secure"
+    name = "${module.labels.id}-dev"
     location = "${var.location}"
     resource_group_name = "${azurerm_resource_group.default.name}"
 
@@ -73,6 +72,26 @@ resource "azurerm_network_security_group" "developer" {
         source_port_range = "0-65535"
         destination_port_range = "*"
         source_address_prefixes = "${var.developer_access}"
+        destination_address_prefix = "*"
+    }
+
+    tags = "${module.labels.tags}"
+}
+
+resource "azurerm_network_security_group" "user" {
+    name = "${module.labels.id}-user"
+    location = "${var.location}"
+    resource_group_name = "${azurerm_resource_group.default.name}"
+
+    security_rule {
+        name = "allow-all-users"
+        priority = 1002
+        direction = "Inbound"
+        access = "Allow"
+        protocol = "TCP"
+        source_port_range = "80"
+        destination_port_range = "*"
+        source_address_prefixes = "${var.user_access}"
         destination_address_prefix = "*"
     }
 
@@ -132,22 +151,22 @@ resource "azurerm_virtual_machine" "vm" {
     }
 
     # https://azuremarketplace.microsoft.com/en-us/marketplace/apps/RogueWave.CentOSbased75?tab=Overview
-    storage_image_reference {
-        publisher = "OpenLogic"
-        offer = "CentOS"
-        sku = "7.3"
-        version = "latest"
+    storage_image_reference = {
+      publisher = "${var.vm_image["publisher"]}"
+      offer = "${var.vm_image["offer"]}"
+      sku = "${var.vm_image["sku"]}"
+      version = "${var.vm_image["version"]}"
     }
 
     os_profile {
         computer_name = "${module.labels.id}-vm"
-        admin_username = "azureuser"
+        admin_username = "${var.server_user}"
     }
 
     os_profile_linux_config {
         disable_password_authentication = true
         ssh_keys {
-            path = "/home/azureuser/.ssh/authorized_keys"
+            path = "/home/${var.server_user}/.ssh/authorized_keys"
             key_data = "${var.public_key}"
         }
     }
