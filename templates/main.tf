@@ -24,12 +24,12 @@ module "azure_vm" {
   # server_user
   
   # Default image is CentOS
-  # vm_image ={
-  #   publisher = "Canonical"
-  #   offer     = "UbuntuServer"
-  #   sku       = "16.04-LTS"
-  #   version   = "latest"
-  # }
+  vm_image = {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
+  }
 }
 
 # Use a separate module to add a dns A record

@@ -98,10 +98,28 @@ resource "azurerm_network_security_group" "user" {
     tags = "${module.labels.tags}"
 }
 
-resource "azurerm_network_interface" "nic" {
+resource "azurerm_network_interface" "dev" {
     name = "${module.labels.id}-nic"
     location = "${var.location}"
     resource_group_name = "${azurerm_resource_group.default.name}"
+    network_security_group_id = "${azurerm_network_security_group.dev.id}"
+    
+
+    ip_configuration {
+        name = "${module.labels.id}-ipconf"
+        subnet_id = "${azurerm_subnet.subnet.id}"
+        private_ip_address_allocation = "dynamic"
+        public_ip_address_id = "${azurerm_public_ip.publicip.id}"
+    }
+
+    tags = "${module.labels.tags}"
+}
+
+resource "azurerm_network_interface" "user" {
+    name = "${module.labels.id}-nic"
+    location = "${var.location}"
+    resource_group_name = "${azurerm_resource_group.default.name}"
+    network_security_group_id = "${azurerm_network_security_group.user.id}"
     
 
     ip_configuration {
