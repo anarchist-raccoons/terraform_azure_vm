@@ -58,8 +58,8 @@ resource "azurerm_public_ip" "publicip" {
   tags = "${module.labels.tags}"
 }
 
-resource "azurerm_network_security_group" "developer" {
-    name = "${module.labels.id}-dev"
+resource "azurerm_network_security_group" "security_groups" {
+    name = "${module.labels.id}"
     location = "${var.location}"
     resource_group_name = "${azurerm_resource_group.default.name}"
 
@@ -69,20 +69,11 @@ resource "azurerm_network_security_group" "developer" {
         direction = "Inbound"
         access = "Allow"
         protocol = "TCP"
-        source_port_range = "0-65535"
+        source_port_range = "*"
         destination_port_range = "*"
         source_address_prefixes = "${var.developer_access}"
         destination_address_prefix = "*"
     }
-
-    tags = "${module.labels.tags}"
-}
-
-resource "azurerm_network_security_group" "user" {
-    name = "${module.labels.id}-user"
-    location = "${var.location}"
-    resource_group_name = "${azurerm_resource_group.default.name}"
-
     security_rule {
         name = "allow-all-users"
         priority = 1002
@@ -90,7 +81,7 @@ resource "azurerm_network_security_group" "user" {
         access = "Allow"
         protocol = "TCP"
         source_port_range = "80"
-        destination_port_range = "*"
+        destination_port_range = "80"
         source_address_prefixes = "${var.user_access}"
         destination_address_prefix = "*"
     }
@@ -98,28 +89,11 @@ resource "azurerm_network_security_group" "user" {
     tags = "${module.labels.tags}"
 }
 
-resource "azurerm_network_interface" "dev" {
+resource "azurerm_network_interface" "nic" {
     name = "${module.labels.id}-nic"
     location = "${var.location}"
     resource_group_name = "${azurerm_resource_group.default.name}"
-    network_security_group_id = "${azurerm_network_security_group.dev.id}"
-    
-
-    ip_configuration {
-        name = "${module.labels.id}-ipconf"
-        subnet_id = "${azurerm_subnet.subnet.id}"
-        private_ip_address_allocation = "dynamic"
-        public_ip_address_id = "${azurerm_public_ip.publicip.id}"
-    }
-
-    tags = "${module.labels.tags}"
-}
-
-resource "azurerm_network_interface" "user" {
-    name = "${module.labels.id}-nic"
-    location = "${var.location}"
-    resource_group_name = "${azurerm_resource_group.default.name}"
-    network_security_group_id = "${azurerm_network_security_group.user.id}"
+    network_security_group_id = "${azurerm_network_security_group.security_groups.id}"
     
 
     ip_configuration {
