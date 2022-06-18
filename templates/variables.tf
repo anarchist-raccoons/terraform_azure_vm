@@ -35,11 +35,11 @@ variable "vm_size" {
 }
 
  variable "developer_access" {
-  type = "list"
+  type = list
   default = []
 }
 variable "user_access" {
-  type = "list"
+  type = list
   default = []
 }
 variable "owner" { }
