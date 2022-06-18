@@ -49,13 +49,13 @@ variable "vm_image" {
 
 variable "developer_access" {
   description = "List of CIDR blocks for full (developer) access. Supply in terraform.tvars"
-  type = "list"
+  type = list
   default = []
 }
 
 variable "user_access" {
   description = "List of CIDR blocks for user access (port 80). Supply in terraform.tvars"
-  type = "list"
+  type = list
   default = []
 }
 
